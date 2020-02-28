@@ -6,20 +6,34 @@
  * @author          @CharalamposTheodorou
  * @since           1.0
  * 
- * @package         AlexaVocabularyExport
+ * @package AlexaVocabularyExport
  */
 
 
 
 class Deactivate {
-    
+
+    /**
+     * Constructor method for this class
+     *
+     * @author      @CharalamposTheodorou
+     * @since       1.0
+     *
+     */
     public function __construct()
     {
-        $this->deactivate();
+        $this->deactivatePlugin();
     }
-    public static function deactivate()
+
+    /**
+     * Deactivation method for the plugin.
+     *
+     * @author      @CharalamposTheodorou
+     * @since       1.0
+     *
+     */
+    public static function deactivatePlugin()
     {
         flush_rewrite_rules();
     }
 }
-new Deactivate();

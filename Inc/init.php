@@ -7,18 +7,31 @@
  * @author @CharalamposTheodorou
  * @since 1.0
  * 
- * @package           AlexaVocabularyExport
+ * @package AlexaVocabularyExport
  */
 
 final class Init
 {
 
+    /**
+     * Constructor for this class.
+     * Requires all necessary .php files and classes for the rest of the plugin process
+     *
+     * @author      @CharalamposTheodorou
+     * @since       1.0
+     *
+     */
     public function __construct()
     {
-        require_once dirname(__FILE__) . '/Base/Enqueue.php';
-        require_once dirname(__FILE__) . '/Page/AdminPage.php';
-        $this->register_services();
+        require_once dirname(__FILE__) . '/Base/BaseController.php';
+        require_once dirname(__FILE__) . '/Page/AdminExportPage.php';
+        require_once dirname(__FILE__) . '/Base/AdminEnqueue.php';
+        require_once dirname(__FILE__) . '/Functions/ExportFunctions.php';
+        require_once dirname(__FILE__) . '/Ajax/AjaxApi.php';
+        require_once dirname(__FILE__) . '/Utils/UploadFile.php';
+        self::register_services();
     }
+
     /**
      * Stores all classes that are used inside an array.
      *
@@ -29,7 +42,11 @@ final class Init
      */
     public static function get_services() {
         return array(
-            ExportPage::class,
+            BaseController::class,
+            AdminEnqueue::class,
+            AdminExportPage::class,
+            ExportFunctions::class,
+            AjaxApi::class,
         );
     }
 

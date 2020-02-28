@@ -7,16 +7,18 @@
  * @author      @CharalamposTheodorou
  * @since       1.0
  *
- * @package     OpenBadgesFramework
+ * @package AlexaVocabularyExport
  */
 
  
 class BaseController {
+    /* PUBLIC variables for plugin path,url and directory */
     public $plugin_path;
     public $plugin_url;
     public $plugin;
 
     /**
+     * Constructor method for this class.
      * Here are initialized main variables.
      *
      * @author      @CharalamposTheodorou
@@ -51,8 +53,27 @@ class BaseController {
     public static function getPluginUrl() {
         return plugin_dir_url(self::dirname_r(__FILE__, 2));
     }
+    
+    /**
+     * Retrieve the PATH of the folder that we will
+     * save the json file, if is not existing we will
+     * create it.
+     * path = ... /wp-content/uploads/alexa-vocabulary-export
+     *
+     * @author      @CharalamposTheodorou
+     * @since       1.0.0
+     *
+     * @return string the path of the json folder.
+     */
+    public function getUploadsFolderPath() {
+        $path = wp_upload_dir()['basedir'] . '/alexa-vocabulary-export/';
 
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
 
+        return $path;
+    }
     /**
      * Returns a parent directory's path, implemented
      * because in php minor of 7 return a warming about
@@ -61,10 +82,10 @@ class BaseController {
      * @author      @CharalamposTheodorou
      * @since       1.0
      * 
-     * @param     $path     A path.
-     * @param int $levels   The number of parent directories to go up.
+     * @param   string      $path     A path.
+     * @param   int         $levels   The number of parent directories to go up.
      *
-     * @return string
+     * @return string       path to directory
      */
     public static function dirname_r($path, $levels = 1) {
         if ($levels > 1) {

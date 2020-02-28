@@ -1,22 +1,30 @@
 <?php
-
 /**
- * Initial class of the plugin.
- * Initiates all other following classes.
+ * This class is responsible to add actions to all functions
+ * and to create the classes for the ajax responses.
  * 
- * @author @CharalamposTheodorou
- * @since 1.0
+ * @author          @CharalamposTheodorou
+ * @since           1.0
  * 
- * @package           AlexaVocabularyExport
+ * @package AlexaVocabularyExport
  */
 
-class ExportPage
-{
+ class AjaxApi extends BaseController
+ {
+    /**
+     * Constructor method of the AjaxApi class.
+     * 
+     * @author          @CharalamposTheodorou
+     * @since           1.0
+     * 
+     * 
+     */
     public function __construct()
     {
-        //require_once dirname(__FILE__) . '/Base/Enqueue.php';
-        //$this->register_services();
+        require_once dirname(__FILE__) . '/AjaxResponse.php';
+        self::register_services();
     }
+
     /**
      * Stores all classes that are used inside an array.
      *
@@ -27,7 +35,7 @@ class ExportPage
      */
     public static function get_services() {
         return array(
-            Enqueue::class,
+            AjaxResponse::class,
         );
     }
 
@@ -37,12 +45,15 @@ class ExportPage
      *
      * @author      @CharalamposTheodorou
      * @since       1.0
+     * 
      */
     public static function register_services() {
         foreach (self::get_services() as $class) {
             $service = self::instantiate($class);
-            if (method_exists($service, 'register')) {
-                $service->register();
+            $class_methods = get_class_methods($service);
+            foreach ($class_methods as $method_name) {
+                add_action("wp_ajax_$method_name", array($service, $method_name));
+                add_action("wp_ajax_nopriv_$method_name", array($service, $method_name));
             }
         }
     }
@@ -60,4 +71,4 @@ class ExportPage
     private static function instantiate($class) {
         return new $class();
     }
-}
+ }

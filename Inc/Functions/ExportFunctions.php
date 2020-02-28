@@ -1,10 +1,12 @@
 <?php
-  class VocabularyJSON
+  /**
+   * This class holds the functions responsible for exporting the csv file to json format.
+   * 
+   * @package AlexaVocabularyExport
+   */
+
+  class ExportFunctions
   {
-      /** public variables for exporation */
-      public $sections;
-      public $categories;//Array of information about the subcategories of each category
-      public $categories_info;//Array of information about all the categories.
 
       /** Category and Subcategory constants **/
       const NEW_CATEGORY = "initiate_category";
@@ -20,10 +22,23 @@
       const GERMAN = "german";
       const FRENCH = "french";
 
+      /** INPUT FILE TYPE constants */
+      const INPUT_FILE_TYPES = ["application/vnd.ms-excel"];
 
-      public function __construct()
+      /**
+       * Starting method of the class/export process
+       * Inititates all variables used.
+       *
+       * @author      @CharalamposTheodorou
+       * @since       1.0
+       *
+       * @param    string   file_name   Name of csv file to export
+       * @return   object               The encoded JSON format or an error message.
+       */
+      public static function controlProcess($file_name)
       {
-        $this->sections =  Array(
+        
+        $sections =  Array(
           'serial_code' ,
           'word_code' ,
           'line_no' ,
@@ -41,19 +56,28 @@
           'german_phrase' 
         );
 
-       $this->categories = Array();
-       $this->categories_info = Array();
-
-       $this->controlProcess();
-      }
+        $categories = Array();
+        $categories_info = Array();
+        //call to exportValue function with necessary parameters for handling the csv file and the transformation
+        return ExportFunctions::exportValue($file_name,$sections,$categories,$categories_info);
       
-      public function controlProcess()
-      {
-        $this->exportValue();
-        $this->returnJsonFormat();  
       }
 
-      public function exportValue()
+      /**
+       * Takes as parameters the sections,categories,categories_info arrays and the file name.
+       * Produces the json output that will be stored on the new content file.
+       *
+       * @author      @CharalamposTheodorou
+       * @since       1.0
+       *
+       * @param   string file_name   Name of csv file to export
+       * @param   array  sections    Array that handles the information for each line of the csv file
+       * @param   array  categories  Empty array that will hold the information for all categories' subcategories.
+       * @param   array  subcategories  Empty array that will hold the information for all categories.
+       * 
+       * @return  object encoded json format of the csv information.
+       */
+      public function exportValue($file_name = null,$sections,$categories,$categories_info)
       {
           $cat_index=0;
           $sub_index=0;
@@ -63,14 +87,14 @@
           $sub_sub_current;
           $new_entry_category = Array();
           $new_entry_subcategory = Array();
-          //TODO: change to input field for droped file
-          if (($handle = fopen("csv1.csv", "r")) !== FALSE) 
+          
+          if (($handle = fopen($file_name, "r")) !== FALSE) 
           {
             while (($data = fgetcsv($handle, 1000, "\n")) !== FALSE) 
             {
+              
               //creates the line array, keys are created before from sections and values from the csv line.
-              $line_info= array_combine($this->sections,explode(";",$data[0]));
-
+              $line_info= array_combine($sections,explode(";",$data[0]));
               //valid is only true when the line contains a valid example of data.
               $line_info['valid'] = $line_info['valid'] == "FALSO" ? "" : "TRUE";
 
@@ -95,10 +119,10 @@
                       {//retyrned new entry for categories_info successfull. updating values.
                         $cat_index++;
                         $cat_current = $line_info['english_word'];
-                        $this->categories_info[$cat_current]=$new_entry_category;
+                        $categories_info[$cat_current]=$new_entry_category;
 
                         //need to add a new category array in $categories.
-                        $this->categories[strtoupper($cat_current)] = Array();
+                        $categories[strtoupper($cat_current)] = Array();
                       }
                   }
                   else if(!empty($index[1]) && $index[1]>$sub_index)
@@ -110,10 +134,10 @@
                       //add new value to category entries and to category entity.
 
                       //updating value of categories_info array.
-                      $update_entry = self::populateValues($line_info,self::UPDATE_CATEGORY,$this->categories_info[$cat_current]);
+                      $update_entry = self::populateValues($line_info,self::UPDATE_CATEGORY,$categories_info[$cat_current]);
                       if($update_entry)
                       {//updating correctly.
-                        $this->categories_info[$cat_current] = $update_entry;
+                        $categories_info[$cat_current] = $update_entry;
                       }
 
                       //creating the subcategory info
@@ -121,7 +145,7 @@
                       if ($new_entry)
                       {//updating correctly.
                         $sub_current = $line_info['english_word'];
-                        $this->categories[$cat_current][$sub_current] = $new_entry;
+                        $categories[$cat_current][$sub_current] = $new_entry;
                       }
                       
                   }
@@ -131,10 +155,10 @@
                       
                       //new entry for subcategory
                       //add new value to category entries and to category entity.
-                      $update_entry = self::populateValues($line_info,self::UPDATE_CATEGORY,$this->categories_info[$cat_current]);
+                      $update_entry = self::populateValues($line_info,self::UPDATE_CATEGORY,$categories_info[$cat_current]);
                       if($update_entry)
                       {//updating correctly.
-                        $this->categories_info[$cat_current] = $update_entry;
+                        $categories_info[$cat_current] = $update_entry;
                       }
 
                       //creating the subcategory info
@@ -142,7 +166,7 @@
                       if ($new_entry)
                       {//updating correctly.
                         $sub_current = $line_info['english_word'];
-                        $this->categories[$cat_current][$sub_current] = $new_entry;
+                        $categories[$cat_current][$sub_current] = $new_entry;
                       }
                   }
                 }
@@ -150,10 +174,10 @@
                 {//line of example here
                   if ($line_info['valid'] == "TRUE" )
                   {//when valid means that that example is checked and is okay for use.
-                    $new_entry = self::populateValues($line_info,self::UPDATE_SUBCATEGORY,$this->categories[$cat_current][$sub_current]);
+                    $new_entry = self::populateValues($line_info,self::UPDATE_SUBCATEGORY,$categories[$cat_current][$sub_current]);
                     if ($new_entry)
                     {//valid to proceed.
-                      $this->categories[$cat_current][$sub_current]=$new_entry;
+                      $categories[$cat_current][$sub_current]=$new_entry;
                     }
                   }
                 }
@@ -161,26 +185,87 @@
               }
             }
             fclose($handle);
+            //to create the correct json format for all fields.
+            $jsonFormat = ExportFunctions::returnJsonFormat($categories,$categories_info); 
+            return $jsonFormat;
           }
+          else
+            return false;
+          
+          
       }
 
       /**
-       * Uses the global variables of categories_info and categories to create the final content file.
+       * Uses the variables of categories_info and categories array to create the final content file.
        * After creation, the content file is transfered to front-end service to provide the download link 
        * of the final json file.
        * 
-       * @author Charalampos Theodorou
+       * @author      @CharalamposTheodorou
+       * @since       1.0
+       *
+       * @param   array  categories  Empty array that will hold the information for all categories' subcategories.
+       * @param   array  subcategories  Empty array that will hold the information for all categories.
+       * 
+       * @return  object encoded json format of the csv information.
+       * 
        */
-      public function returnJsonFormat()
+      public function returnJsonFormat($categories,$categories_info)
       {
-        $content['CONTENT']['CATEGORIES_INFO']=$this->categories_info;
+        $content['CONTENT']['CATEGORIES_INFO']=$categories_info;
         
-        
-        foreach ($this->categories as $key => $category)
-        {
+        foreach ($categories as $key => $category)
+        {//creating the categories sections that holds all information about their subcategories.
           $content['CONTENT'][str_replace(' ','_',$key)] = $category;
         }
-        print_r(json_encode($content));
+        //encoding the array into a json format.
+        $contentJson = json_encode($content);
+
+        return $contentJson;
+      }
+
+      /**
+       * Uses the variables of categories_info and categories array to create the final content file.
+       * After creation, the content file is transfered to front-end service to provide the download link 
+       * of the final json file.
+       * 
+       * @author      @CharalamposTheodorou
+       * @since       1.0
+       *
+       * @param   string  path          Path to the folder that the file will be stored.
+       * @param   string  file_name     Name of the file to stored
+       * @param   object  uploadedfile  Contents to store to the new file
+       *   
+       * @return  boolean               True or false after storing and closing the file
+       * 
+       */
+      public function uploadFileToUploads($path,$file_name,$uploadedfile)
+      {
+        //removes the previous .csv files from the /uploads/alexa-vocabulary-export folder
+        ExportFunctions::removePreviousFile($path);
+
+        $file = fopen($path.$file_name,"w");
+        fwrite($file,$uploadedfile);
+
+        return fclose($file.$file_name);
+      }
+
+      /**
+       * Removes previous .csv files from the directory.
+       * 
+       * @author      @CharalamposTheodorou
+       * @since       1.0
+       *
+       * @param   string  path          Path to the folder that the previous csv files will be removed/replaced.
+       *   
+       * @return  boolean               True or false if successful in deleting the files from the directory
+       * 
+       */
+      public function removePreviousFile($path)
+      {
+        $filecount = 0;
+        $files = glob($path . "*.csv");
+        foreach($files as $file)
+          return unlink($file);
       }
 
       /**
@@ -188,11 +273,14 @@
        * option given, it populates a new entry for a new category or subcategory.
        * All checks for validation of the information is done here.
        * 
-       * $line_info: [Array] information to restructure for a new category or subcategory.
-       * $option: [String] Option given for either category or subcategory. 
-       * $update_info: [Array] Default value is empty, used in case to update contents in category or subcategory
+       * @author      Charalampos Theodorou
+       * @since       1.0
        * 
-       * @author Charalampos Theodorou
+       * @param   array   line_info   Holds all the information for a single line in the csv file.
+       * @param   string  option      Which action to proceed with the new entry to the object created.
+       * @param   array   update_info Array that holds the previous (empty at first) information of a category or subcategory.
+       * 
+       * @return  array               Array with updated information of a section (category/subcategory).
        */
       public function populateValues($line_info,$option,$update_info = [])
       {
@@ -279,10 +367,13 @@
       /**
        * Takes language selection and text and returns ssml tag for language.
        * 
-       * $language: [String] language constant given for the appropriate tag.
-       * $response: [String] Text information to be transformed in a ssml tag. 
+       * @author     Charalampos Theodorou 
+       * @since      1.0
        * 
-       * @author Charalampos Theodorou 
+       * @param   string    response  The text to add the tags.
+       * @param   string    language  Selection for language to add appropriate tags
+       * 
+       * @return  string              Updated string with tags.
        */
       public function provideSSMLtags($response,$language)
       {
@@ -309,7 +400,26 @@
         }
         return $ssml_text;
       }
+
+      /**
+       * Does necessary checks on input file to see if valid for upload.
+       * 
+       * @author     Charalampos Theodorou 
+       * @since      1.0
+       * 
+       * @param   string    file_type Type of input file
+       * @param   string    file_name Name of input file
+       * 
+       * @return  boolean             True or false if input file is appropriate for use.
+       */
+      public function checkInputType($file_type,$file_name)
+      {
+        foreach (self::INPUT_FILE_TYPES AS $type)
+          if ( ($file_type == $type) && (strpos($file_name,".csv")!==false))
+            return true;
+        
+        return false;
+      }
   }
-  $vocabulary_json = new VocabularyJSON();
 
 ?>
