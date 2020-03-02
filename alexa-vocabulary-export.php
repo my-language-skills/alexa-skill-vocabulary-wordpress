@@ -11,8 +11,7 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Alexa Vocabulary Export
- * Description:       This plugin creates an admin accessable page where only admins can add a new csv file and exports
- *                    it in a JSON format, that will be used on the Alexa skill for learning vocabulary in different languages.
+ * Description:       This plugin creates an admin accessable page where only admins can add a new csv file and exports it in a JSON format, that will be used on the Alexa skill for learning vocabulary in different languages.
  * 
  * Version:           1.0
  * Author:            My language skills team
@@ -39,7 +38,7 @@ define( 'PLUGIN', plugin_basename( __FILE__ ) );
 function alexa_vocabulary_export_activation()
 {
     require_once dirname(__FILE__) . '/Inc/Base/Activate.php';
-    //Activate::activatePlugin();
+    new Activate();
 }
 register_activation_hook( __FILE__, 'alexa_vocabulary_export_activation' );
 
@@ -52,7 +51,7 @@ register_activation_hook( __FILE__, 'alexa_vocabulary_export_activation' );
  */
 function alexa_vocabulary_export_deactivation() {
     require_once dirname(__FILE__) . '/Inc/Base/Deactivate.php';
-    //Deactivate::deactivatePlugin();
+    new Deactivate();
 }
 register_deactivation_hook(__FILE__, 'alexa_vocabulary_export_deactivation');
 

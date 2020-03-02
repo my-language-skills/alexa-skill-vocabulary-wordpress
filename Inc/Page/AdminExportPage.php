@@ -21,12 +21,12 @@ class AdminExportPage
 
     //SETTINGS CONSTS
     const PAGE_NAME = "export_settings_page";
-
+    
     //FIELD CONSTS
     const EXP_INPUT_CSV = "csv_input_field";
     const EXP_CUR_NAME = "current_upload_field";
     const EXP_REMOVE_BTN = "remove_button";
-    
+
     //options var
     private $options;
 
@@ -57,7 +57,7 @@ class AdminExportPage
         $exp_cur_name = $options[self::EXP_CUR_NAME];
         //check if any information changed from previous form submit.
         $defaults = array(
-            self::EXP_CUR_NAME => $exp_cur_name ? $exp_cur_name : 'No file uploaded'
+            self::EXP_CUR_NAME => $exp_cur_name ? $exp_cur_name : 'No file uploaded',
         );
         //update the options values.
         update_option(self::OPTION_NAME,$defaults);
@@ -103,6 +103,7 @@ class AdminExportPage
             <div class = "wrap">
                 <br>
                 <form method="post" action="options.php" enctype="multipart/form-data">
+                    <div class = "tabcontent">
                     <?php
                     //wordpress functions for creating the options sections fields.
                     settings_fields(self::OPTION_GROUP);
@@ -112,10 +113,11 @@ class AdminExportPage
                     </div>
                     <?php
                     //submit button for uploading a file
-                    submit_button(__('Upload File','alexa-vocabulary-export'),'primary','upload_btn');
+                    submit_button(__('Upload File','alexa-vocabulary-export'),'button custom_btn','ave_upload_btn');
                     //submit button for exporting a file
-                    submit_button(__('Export Json','alexa-vocabulary-export'),'primary','export_btn');
-                    ?>
+                    submit_button(__('Export Json','alexa-vocabulary-export'),'button custom_btn','ave_export_btn');
+                    ?> 
+                    </div>
                 </form>
             </div>
             <?php
@@ -172,8 +174,6 @@ class AdminExportPage
             self::SECTION_EXPORT // Section
         );
         
-        
-
     }
 
     /**

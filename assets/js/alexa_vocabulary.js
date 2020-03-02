@@ -29,10 +29,10 @@ jQuery(function(event)
     var csv_file_name;
     var file_uploaded;
     //upload button and export should be disabled at first. After something is uploaded correctly.
-    jQuery('#upload_btn').prop('disabled',true);
-    jQuery('#export_btn').prop('disabled',true);
+    jQuery('#ave_upload_btn').prop('disabled',true);
+    jQuery('#ave_export_btn').prop('disabled',true);
     if (jQuery('#current_upload_field').val() != "No file uploaded")
-        jQuery('#export_btn').prop('disabled',false);
+        jQuery('#ave_export_btn').prop('disabled',false);
     var upload_clicked = false;
     var export_clicked = false;
 
@@ -42,7 +42,7 @@ jQuery(function(event)
      * @author     Charalampos Theodorou 
      * @since      1.0
      */
-    jQuery('#upload_btn').on("click",function()
+    jQuery('#ave_upload_btn').on("click",function()
     {
         upload_clicked = true;
     });
@@ -99,7 +99,7 @@ jQuery(function(event)
      * @author     Charalampos Theodorou 
      * @since      1.0
      */
-    jQuery('#export_btn').on("click",function()
+    jQuery('#ave_export_btn').on("click",function()
     {
         export_clicked = true;
     });
@@ -179,12 +179,12 @@ jQuery(function(event)
                 if (ajax_response.proceed)
                 {//valid to continue. test successful
                     jQuery('#file-upload-response').html(ajax_response.message);
-                    jQuery('#upload_btn').prop('disabled',false);
+                    jQuery('#ave_upload_btn').prop('disabled',false);
                 }   
                 else
                 {//something wrong with file
                     jQuery('#file-upload-response').html(ajax_response.error);
-                    jQuery('#upload_btn').prop('disabled',true);
+                    jQuery('#ave_upload_btn').prop('disabled',true);
                     
                 }
             }

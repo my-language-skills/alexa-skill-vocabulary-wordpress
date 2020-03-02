@@ -3,3 +3,51 @@
     color: #cd0000;
     font-size: 15px;
 }
+
+.wrap .tabcontent 
+{
+    border: 2px solid  #e2e2e2;
+    background-color: #ffffffea;
+}
+ 
+.tabcontent {
+    padding: 6px 40px;
+    border-top: none;
+}
+
+
+.button.custom_btn#ave_upload_btn{
+    background-color: #2485ce;
+    border-color: #cdd1d5;
+    color: #fff;
+}
+
+.button.custom_btn#ave_upload_btn:hover{
+    background-color: #2074b5;
+}
+
+.button.custom_btn#ave_export_btn{
+    background-color: #05e63ac7;
+    border-color: #cdd1d5;
+    color: #fff;
+}
+
+.button.custom_btn#ave_export_btn:hover{
+    background-color: #0aec3f;
+}
+
+#remove_button
+{
+    border: 1px solid;
+    border-color: #cdd1d5;
+    background-color: #3260ebd7;
+    color: #fff;
+    font-size: 13px;    
+    min-height:30px;
+    border-radius: 3px;
+}
+#remove_button:hover
+{
+    background-color: #e93434f3;
+}
+

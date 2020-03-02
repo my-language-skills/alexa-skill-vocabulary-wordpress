@@ -9,7 +9,7 @@
  */
 
 //waits for the upload form submition
-if (isset($_POST['upload_btn']))
+if (isset($_POST['ave_upload_btn']))
 {
     //if file with correct input name is found then begin upload process
     if ($_FILES[AdminExportPage::EXP_INPUT_CSV])
