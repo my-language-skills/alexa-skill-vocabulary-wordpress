@@ -12,12 +12,13 @@ if (!defined('WP_UNINSTALL_PLUGIN'))
     exit;
 }
 
+//here we delete the settings option created by the plugin.
+delete_site_option('ave_options');
+delete_option('ave_options');
+
 require_once dirname(__FILE__) . '/Inc/Base/BaseController.php';
 require_once dirname(__FILE__) . '/Inc/Functions/ExportFunctions.php';
 //remove csv file from uploads.
 ExportFunctions::removePreviousFile(BaseController::getUploadsFolderPath());
 //removes directory in uploads
-rmdir(BaseController::getUploadsFolderPath());
-//here we delete the settings option created by the plugin.
-delete_option('ave_options');
-
+WP_Filesystem_Base::rmdir(BaseController::getUploadsFolderPath());

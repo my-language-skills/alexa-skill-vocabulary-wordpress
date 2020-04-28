@@ -68,6 +68,7 @@ jQuery(function(event)
                 {
                     jQuery('#file-upload-response').html(data.message);
                     jQuery('#current_upload_field').val('No file uploaded');
+                    jQuery('#ave_export_btn').prop('disabled',true);
                     var reply_nested = function(response)
                     {//response from the request to update the settings options.
                         var response = JSON.parse(response);

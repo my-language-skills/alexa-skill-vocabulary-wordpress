@@ -53,14 +53,14 @@ class AdminExportPage
     public static function init()
     {
         //get the previous values of options array
-        $options = get_option(self::OPTION_NAME);
+        $options = get_site_option(self::OPTION_NAME);
         $exp_cur_name = $options[self::EXP_CUR_NAME];
         //check if any information changed from previous form submit.
         $defaults = array(
             self::EXP_CUR_NAME => $exp_cur_name ? $exp_cur_name : 'No file uploaded',
         );
         //update the options values.
-        update_option(self::OPTION_NAME,$defaults);
+        update_site_option(self::OPTION_NAME,$defaults);
     }
     
     /**
@@ -98,7 +98,7 @@ class AdminExportPage
         else
         {
             //getting the options settings..
-            $this->options = get_option(self::OPTION_NAME);
+            $this->options = get_site_option(self::OPTION_NAME);
             ?>
             <div class = "wrap">
                 <br>

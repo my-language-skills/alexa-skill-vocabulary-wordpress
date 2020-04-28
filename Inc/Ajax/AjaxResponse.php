@@ -174,7 +174,7 @@ final class AjaxResponse extends BaseController
         if (isset($_POST['value']) && !empty($_POST['value']))
         {
             //gets the option array from database
-            $settings_options = get_option(AdminExportPage::OPTION_NAME);
+            $settings_options = get_site_option(AdminExportPage::OPTION_NAME);
             if ($settings_options)
             {//option is loaded correctly. proceed to update.
                 //updates the values and sanitizes everything.
@@ -185,7 +185,7 @@ final class AjaxResponse extends BaseController
                 $args['display_message'] = true;
                 $args['proceed'] = true;
                 //updates the value of the settings opitons.
-                update_option(AdminExportPage::OPTION_NAME,$options);
+                update_site_option(AdminExportPage::OPTION_NAME,$options);
             }
         }
         else
