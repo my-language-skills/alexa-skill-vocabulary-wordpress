@@ -99,7 +99,7 @@
               $line_info['valid'] = $line_info['valid'] == "FALSO" ? "" : "TRUE";
 
               //serial_code exists in every row, except from the titles' line.
-              if (is_numeric($line_info['serial_code']))
+              if (is_numeric($line_info['serial_code']) || empty($line_info['serial_code']))
               {//not first line, headers
                 if (empty($line_info['word_code']))
                 {//category or subcategory title found
@@ -215,7 +215,8 @@
         
         foreach ($categories as $key => $category)
         {//creating the categories sections that holds all information about their subcategories.
-          $content['CONTENT'][str_replace(' ','_',$key)] = $category;
+          if (!empty($category))
+            $content['CONTENT'][str_replace(' ','_',$key)] = $category;
         }
         //encoding the array into a json format.
         $contentJson = json_encode($content);
